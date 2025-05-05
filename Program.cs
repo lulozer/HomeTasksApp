@@ -1,23 +1,26 @@
+﻿using HomeTasksApp.Models;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddControllersWithViews();
+
+// 🛠 BURAYA EKLE
+builder.Services.AddDbContext<UygulamaDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddSession();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
 }
 
-app.UseHttpsRedirection();
 app.UseStaticFiles();
-
 app.UseRouting();
-
+app.UseSession();
 app.UseAuthorization();
 
 app.MapControllerRoute(
@@ -25,3 +28,62 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
+
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<UygulamaDbContext>();
+
+    if (!db.Users.Any(u => u.Name == "Ekin"))
+    {
+        var household = db.Households.FirstOrDefault(h => h.Name == "ÖzerFamily");
+        db.Users.Add(new User
+        {
+            Name = "Ekin",
+            Password = "ekin123",
+            IsAdmin = false,
+            Household = household!
+        });
+        db.SaveChanges();
+    }
+}
+
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<UygulamaDbContext>();
+
+    
+    var evimiz = db.Households.FirstOrDefault(h => h.Name == "Evimiz");
+    if (evimiz == null)
+    {
+        evimiz = new Household { Name = "Evimiz" };
+        db.Households.Add(evimiz);
+        db.SaveChanges();
+    }
+
+    
+    if (!db.Users.Any(u => u.Name == "Behiye"))
+    {
+        db.Users.Add(new User
+        {
+            Name = "Behiye",
+            Password = "behiye123",
+            IsAdmin = true,
+            Household = evimiz
+        });
+    }
+
+    
+    if (!db.Users.Any(u => u.Name == "Nisa"))
+    {
+        db.Users.Add(new User
+        {
+            Name = "Nisa",
+            Password = "nisa123",
+            IsAdmin = false,
+            Household = evimiz
+        });
+    }
+
+    db.SaveChanges();
+}
+

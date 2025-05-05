@@ -1,0 +1,28 @@
+﻿@model List<HomeTasksApp.Models.Household>
+
+<h2>Tüm Householdlar</h2>
+
+<table>
+    <thead>
+        <tr>
+            <th>Household Adı</th>
+            <th>Kullanıcılar</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var h in Model)
+        {
+            <tr>
+                <td>@h.Name</td>
+                <td>
+                    <ul>
+                        @foreach (var user in h.Users)
+                        {
+                            <li>@user.Name (@(user.IsAdmin ? "Admin" : "Üye"))</li>
+                        }
+                    </ul>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
