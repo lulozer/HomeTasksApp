@@ -1,28 +1,42 @@
 ﻿@model List<HomeTasksApp.Models.Household>
 
-<h2>Tüm Householdlar</h2>
+@{
+    ViewData["Title"] = "Tüm Householdlar";
+}
 
-<table>
-    <thead>
-        <tr>
-            <th>Household Adı</th>
-            <th>Kullanıcılar</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var h in Model)
-        {
-            <tr>
-                <td>@h.Name</td>
-                <td>
-                    <ul>
-                        @foreach (var user in h.Users)
-                        {
-                            <li>@user.Name (@(user.IsAdmin ? "Admin" : "Üye"))</li>
-                        }
-                    </ul>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+<div class="container mt-4">
+    <h2 class="mb-4 text-center">@ViewData["Title"]</h2>
+
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover">
+            <thead class="table-light">
+                <tr>
+                    <th>Household Adı</th>
+                    <th>Kullanıcılar</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var h in Model)
+                {
+                        <tr>
+                            <td class="fw-bold">@h.Name</td>
+                            <td>
+                                <ul class="mb-0">
+                                @foreach (var user in h.Users)
+                                {
+                                            <li>
+                                        @user.Name
+                                                <span class="badge bg-@(user.IsAdmin ? "danger" : "secondary") ms-1">
+                                            @(user.IsAdmin ? "Admin" : "Üye")
+                                                </span>
+                                            </li>
+                                }
+                                </ul>
+                            </td>
+                        </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+

@@ -4,18 +4,28 @@
     ViewData["Title"] = "Görev Sil";
 }
 
-<h2>@ViewData["Title"]</h2>
+<div class="row justify-content-center mt-5">
+    <div class="col-md-7">
+        <div class="card shadow-sm border-danger">
+            <div class="card-body">
+                <h2 class="text-center text-danger mb-4">@ViewData["Title"]</h2>
 
-<h4>Bu görevi silmek istediğinize emin misiniz?</h4>
+                <h5 class="text-center mb-4">Bu görevi silmek istediğinize emin misiniz?</h5>
 
-<div class="border p-3 mb-3">
-    <p><strong>Başlık:</strong> @Model.Baslik</p>
-    <p><strong>Açıklama:</strong> @Model.Aciklama</p>
-    <p><strong>Atanan:</strong> @Model.AssignedUser?.Name</p>
+                <div class="mb-4 p-3 bg-light rounded border">
+                    <p><strong>Başlık:</strong> @Model.Baslik</p>
+                    <p><strong>Açıklama:</strong> @Model.Aciklama</p>
+                    <p><strong>Atanan:</strong> @Model.AssignedUser?.Name</p>
+                </div>
+
+                <form asp-action="Delete" method="post">
+                    <input type="hidden" asp-for="Id" />
+                    <div class="d-flex justify-content-between">
+                        <button type="submit" class="btn btn-danger">🗑 Evet, Sil</button>
+                        <a asp-action="Index" class="btn btn-outline-secondary">İptal</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
-
-<form asp-action="Delete">
-    <input type="hidden" asp-for="Id" />
-    <button type="submit" class="btn btn-danger">Evet, Sil</button>
-    <a asp-action="Index" class="btn btn-secondary">İptal</a>
-</form>

@@ -1,20 +1,44 @@
-﻿<h2>@ViewBag.HouseholdUsers.Count kişi @ViewBag.HouseholdTasks.Count görev ile listeleniyor</h2>
+﻿@{
+    ViewData["Title"] = "Görev Panosu";
+    var users = ViewBag.HouseholdUsers as List<HomeTasksApp.Models.User>;
+    var tasks = ViewBag.HouseholdTasks as List<HomeTasksApp.Models.Gorev>;
+}
 
-<h3>Görev Listesi</h3>
-<table class="table">
-    <tr>
-        <th>Görev</th>
-        <th>Açıklama</th>
-        <th>Kime Atandı</th>
-        <th>Durum</th>
-    </tr>
-    @foreach (var g in (List<HomeTasksApp.Models.Gorev>)ViewBag.HouseholdTasks)
-    {
-        <tr>
-            <td>@g.Baslik</td>
-            <td>@g.Aciklama</td>
-            <td>@g.AssignedUser?.Name</td>
-            <td>@(g.TamamlandiMi ? "✔️" : "⏳")</td>
-        </tr>
-    }
-</table>
+<div class="container mt-4">
+    <h2 class="mb-4 text-primary">
+        @users?.Count kişi, @tasks?.Count görev ile listeleniyor 📋
+    </h2>
+
+    <h4 class="mb-3">📌 Görev Listesi</h4>
+
+    <table class="table table-striped table-hover">
+        <thead class="table-dark">
+            <tr>
+                <th>Görev</th>
+                <th>Açıklama</th>
+                <th>Kime Atandı</th>
+                <th>Durum</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var g in tasks)
+            {
+                    <tr>
+                        <td>@g.Baslik</td>
+                        <td>@g.Aciklama</td>
+                        <td>@g.AssignedUser?.Name</td>
+                        <td>
+                        @if (g.TamamlandiMi)
+                        {
+                                    <span class="badge bg-success">✔ Tamamlandı</span>
+                        }
+                        else
+                        {
+                                    <span class="badge bg-warning text-dark">⏳ Bekliyor</span>
+                        }
+                        </td>
+                    </tr>
+            }
+        </tbody>
+    </table>
+</div>

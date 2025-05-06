@@ -5,57 +5,72 @@
     var currentUserId = ViewBag.CurrentUserId as int?;
 }
 
-<h2>@ViewData["Title"]</h2>
+<div class="container mt-5">
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h2 class="text-center mb-4">@ViewData["Title"]</h2>
 
-<table class="table table-bordered">
-    <thead>
-        <tr>
-            <th>Başlık</th>
-            <th>Açıklama</th>
-            <th>Son Tarih</th>
-            <th>Atanan Kişi</th>
-            <th>Tamamlayan</th>
-            <th>Durum</th>
-            <th>İşlem</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var gorev in Model)
-        {
-            <tr>
-                <td>@gorev.Baslik</td>
-                <td>@gorev.Aciklama</td>
-                <td>@gorev.SonTarih.ToShortDateString()</td>
-                <td>@gorev.AssignedUser?.Name</td>
-                <td>@gorev.CompletedByUser?.Name ?? "—"</td>
-                <td>
-                    @if (gorev.TamamlandiMi)
-                    {
-                        <span class="text-success">✔ Tamamlandı</span>
-                    }
-                    else
-                    {
-                        <span class="text-warning">⏳ Bekliyor</span>
-                    }
-                </td>
-                <td>
-                    @* TAMAMLA *@
-                    @if (!gorev.TamamlandiMi)
-                    {
-                        <form asp-action="Tamamla" method="post" style="display:inline">
-                            <input type="hidden" name="id" value="@gorev.Id" />
-                            <button type="submit" class="btn btn-success btn-sm">Tamamla</button>
-                        </form>
-                    }
+            @if (Model.Any())
+            {
+                    <table class="table table-hover align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Başlık</th>
+                                <th>Açıklama</th>
+                                <th>Son Tarih</th>
+                                <th>Atanan Kişi</th>
+                                <th>Tamamlayan</th>
+                                <th>Durum</th>
+                                <th>İşlem</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        @foreach (var gorev in Model)
+                        {
+                                    <tr>
+                                        <td>@gorev.Baslik</td>
+                                        <td>@gorev.Aciklama</td>
+                                        <td>@gorev.SonTarih.ToShortDateString()</td>
+                                        <td>@gorev.AssignedUser?.Name</td>
+                                        <td>@gorev.CompletedByUser?.Name ?? "—"</td>
+                                        <td>
+                                    @if (gorev.TamamlandiMi)
+                                    {
+                                                    <span class="badge bg-success">✔ Tamamlandı</span>
+                                    }
+                                    else
+                                    {
+                                                    <span class="badge bg-warning text-dark">⏳ Bekliyor</span>
+                                    }
+                                        </td>
+                                        <td>
+                                            <div class="d-flex flex-wrap gap-1">
+                                        @if (!gorev.TamamlandiMi)
+                                        {
+                                                        <form asp-action="Tamamla" method="post" class="d-inline">
+                                                            <input type="hidden" name="id" value="@gorev.Id" />
+                                                            <button type="submit" class="btn btn-success btn-sm">Tamamla</button>
+                                                        </form>
+                                        }
 
-                    @* SADECE HOUSEHOLD ADMIN GÖRSÜN *@
-                    @if (ViewBag.CurrentUserIsHouseholdAdmin == true)
-                    {
-                        <a asp-action="Edit" asp-route-id="@gorev.Id" class="btn btn-warning btn-sm ms-1">Düzenle</a>
-                        <a asp-action="Delete" asp-route-id="@gorev.Id" class="btn btn-danger btn-sm ms-1">Sil</a>
-                    }
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+                                        @if (ViewBag.CurrentUserIsHouseholdAdmin == true)
+                                        {
+                                                        <a asp-action="Edit" asp-route-id="@gorev.Id" class="btn btn-outline-warning btn-sm">Düzenle</a>
+                                                        <a asp-action="Delete" asp-route-id="@gorev.Id" class="btn btn-outline-danger btn-sm">Sil</a>
+                                        }
+                                            </div>
+                                        </td>
+                                    </tr>
+                        }
+                        </tbody>
+                    </table>
+            }
+            else
+            {
+                    <div class="alert alert-info text-center">
+                        Henüz görev eklenmemiş.
+                    </div>
+            }
+        </div>
+    </div>
+</div>

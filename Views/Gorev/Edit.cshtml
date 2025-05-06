@@ -1,32 +1,45 @@
 ﻿@model HomeTasksApp.Models.Gorev
 
-<h2>Görevi Düzenle</h2>
+@{
+    ViewData["Title"] = "Görevi Düzenle";
+}
 
-<form asp-action="Edit" method="post">
-    @Html.AntiForgeryToken()
+<div class="row justify-content-center mt-5">
+    <div class="col-md-7">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h2 class="text-center mb-4">@ViewData["Title"]</h2>
 
-    <input type="hidden" asp-for="Id" />
+                <form asp-action="Edit" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" asp-for="Id" />
 
-    <div class="form-group">
-        <label asp-for="Baslik"></label>
-        <input asp-for="Baslik" class="form-control" />
+                    <div class="form-floating mb-3">
+                        <input asp-for="Baslik" class="form-control" placeholder="Görev başlığı" />
+                        <label asp-for="Baslik">Başlık</label>
+                    </div>
+
+                    <div class="form-floating mb-3">
+                        <input asp-for="Aciklama" class="form-control" placeholder="Açıklama" />
+                        <label asp-for="Aciklama">Açıklama</label>
+                    </div>
+
+                    <div class="form-floating mb-3">
+                        <input asp-for="SonTarih" type="date" class="form-control" placeholder="Son Tarih" />
+                        <label asp-for="SonTarih">Son Tarih</label>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label">Görevi Atanan Kişi</label>
+                        <select asp-for="AssignedUserId" asp-items="ViewBag.KullaniciListesi" class="form-select"></select>
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <button type="submit" class="btn btn-primary">💾 Kaydet</button>
+                        <a asp-action="Index" class="btn btn-outline-secondary">İptal</a>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
-
-    <div class="form-group">
-        <label asp-for="Aciklama"></label>
-        <input asp-for="Aciklama" class="form-control" />
-    </div>
-
-    <div class="form-group">
-        <label asp-for="SonTarih"></label>
-        <input asp-for="SonTarih" type="date" class="form-control" />
-    </div>
-
-    <div class="form-group">
-        <label>Görevi Atanan Kişi</label>
-        <select asp-for="AssignedUserId" asp-items="ViewBag.KullaniciListesi" class="form-control"></select>
-    </div>
-
-    <button type="submit" class="btn btn-primary">Kaydet</button>
-    <a asp-action="Index" class="btn btn-secondary">İptal</a>
-</form>
+</div>

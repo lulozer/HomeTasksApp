@@ -4,42 +4,48 @@
     ViewData["Title"] = "Yeni Görev Oluştur";
 }
 
-<h2>@ViewData["Title"]</h2>
+<div class="row justify-content-center mt-4">
+    <div class="col-md-7">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h2 class="card-title text-center mb-4">@ViewData["Title"]</h2>
 
-<form asp-action="Create" method="post">
-    @Html.AntiForgeryToken()
+                <form asp-action="Create" method="post">
+                    @Html.AntiForgeryToken()
 
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
-    <div class="form-group">
-        <label asp-for="Baslik"></label>
-        <input asp-for="Baslik" class="form-control" />
-        <span asp-validation-for="Baslik" class="text-danger"></span>
+                    <div class="form-floating mb-3">
+                        <input asp-for="Baslik" class="form-control" placeholder="Görev başlığı" />
+                        <label asp-for="Baslik">Görev Başlığı</label>
+                        <span asp-validation-for="Baslik" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-floating mb-3">
+                        <input asp-for="Aciklama" class="form-control" placeholder="Açıklama" />
+                        <label asp-for="Aciklama">Açıklama</label>
+                        <span asp-validation-for="Aciklama" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-floating mb-3">
+                        <input asp-for="SonTarih" type="date" class="form-control" placeholder="Son tarih" />
+                        <label asp-for="SonTarih">Son Tarih</label>
+                        <span asp-validation-for="SonTarih" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label">Kime Atanacak?</label>
+                        <select asp-for="AssignedUserId" asp-items="ViewBag.KullaniciListesi" class="form-select"></select>
+                        <span asp-validation-for="AssignedUserId" class="text-danger"></span>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100">Görev Oluştur</button>
+                </form>
+            </div>
+        </div>
     </div>
-
-    <div class="form-group">
-        <label asp-for="Aciklama"></label>
-        <input asp-for="Aciklama" class="form-control" />
-        <span asp-validation-for="Aciklama" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="SonTarih"></label>
-        <input asp-for="SonTarih" type="date" class="form-control" />
-        <span asp-validation-for="SonTarih" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label>Kime Atanacak?</label>
-        <select asp-for="AssignedUserId" asp-items="ViewBag.KullaniciListesi" class="form-control"></select>
-        <span asp-validation-for="AssignedUserId" class="text-danger"></span>
-    </div>
-
-    <button type="submit" class="btn btn-primary">Görev Oluştur</button>
-</form>
+</div>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    @await Html.PartialAsync("_ValidationScriptsPartial")
 }

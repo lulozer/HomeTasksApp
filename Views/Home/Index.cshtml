@@ -1,6 +1,34 @@
-﻿@{
+﻿@using HomeTasksApp.Models
+@inject HomeTasksApp.Models.UygulamaDbContext _context
+@{
     ViewData["Title"] = "Ana Sayfa";
+
+    var userId = Context.Session.GetInt32("UserId");
+    string userName = "kullanıcı";
+
+    if (userId != null)
+    {
+        var user = _context.Users.FirstOrDefault(u => u.Id == userId);
+        if (user != null)
+        {
+            userName = user.Name;
+        }
+    }
 }
 
-<h1>Hoş geldiniz, Ekin ve Eylül!</h1>
-<p>Görev takip uygulamanız başlıyor 🎯</p>
+<div class="container mt-5">
+    <div class="text-center">
+        <h1 class="display-4">Hoş geldin, @userName! 👋</h1>
+        <p class="lead mt-3">
+            Görev takip uygulaman başlıyor! 🎯
+        </p>
+        <hr class="my-4" />
+        <p>
+            Ailenizin görevlerini planlayın, paylaşın ve tamamlayın.
+        </p>
+        <a href="@Url.Action("Index", "Gorev")" class="btn btn-primary btn-lg mt-3">
+            Görevleri Görüntüle
+        </a>
+    </div>
+</div>
+
