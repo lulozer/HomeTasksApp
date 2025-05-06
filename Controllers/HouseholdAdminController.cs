@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HomeTasksApp.Controllers
 {
-    public class HouseholdAdminController : Controller
+    public class HouseholdAdminController : BaseController
     {
         private readonly UygulamaDbContext _context;
 

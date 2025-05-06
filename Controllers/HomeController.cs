@@ -17,9 +17,6 @@ namespace HomeTasksApp.Controllers
 
         public IActionResult Index()
         {
-            if (!IsUserLoggedIn())
-                return RedirectToAction("Login", "Account");
-
             var userId = GetCurrentUserId();
             var user = _context.Users
                 .Include(u => u.Household)
@@ -28,7 +25,6 @@ namespace HomeTasksApp.Controllers
             if (user == null)
                 return RedirectToAction("Login", "Account");
 
-            // Bu kullanıcıya atanmış görevler
             var gorevler = _context.Gorevler
                 .Include(g => g.AssignedUser)
                 .Where(g => g.AssignedUserId == userId)
@@ -39,6 +35,5 @@ namespace HomeTasksApp.Controllers
 
             return View();
         }
-
     }
 }

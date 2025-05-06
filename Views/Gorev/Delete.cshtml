@@ -1,17 +1,21 @@
 ﻿@model HomeTasksApp.Models.Gorev
 
-<h2>Görevi Sil</h2>
+@{
+    ViewData["Title"] = "Görev Sil";
+}
 
-<div>
-    <h4>@Model.Baslik</h4>
-    <p>@Model.Aciklama</p>
-    <p><strong>Son Tarih:</strong> @Model.SonTarih.ToShortDateString()</p>
-    <p><strong>Atanan Kişi:</strong> @Model.AssignedUser?.Name</p>
+<h2>@ViewData["Title"]</h2>
 
-    <form asp-action="Delete">
-        <input type="hidden" asp-for="Id" />
-        <button type="submit" class="btn btn-danger">Sil</button>
-        <a asp-action="Index" class="btn btn-secondary">İptal</a>
-    </form>
+<h4>Bu görevi silmek istediğinize emin misiniz?</h4>
+
+<div class="border p-3 mb-3">
+    <p><strong>Başlık:</strong> @Model.Baslik</p>
+    <p><strong>Açıklama:</strong> @Model.Aciklama</p>
+    <p><strong>Atanan:</strong> @Model.AssignedUser?.Name</p>
 </div>
 
+<form asp-action="Delete">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger">Evet, Sil</button>
+    <a asp-action="Index" class="btn btn-secondary">İptal</a>
+</form>

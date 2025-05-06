@@ -39,21 +39,21 @@
                     }
                 </td>
                 <td>
+                    @* TAMAMLA *@
                     @if (!gorev.TamamlandiMi)
                     {
-                        <form asp-action="Tamamla" method="post">
+                        <form asp-action="Tamamla" method="post" style="display:inline">
                             <input type="hidden" name="id" value="@gorev.Id" />
                             <button type="submit" class="btn btn-success btn-sm">Tamamla</button>
                         </form>
                     }
-                    else
+
+                    @* SADECE HOUSEHOLD ADMIN GÖRSÜN *@
+                    @if (ViewBag.CurrentUserIsHouseholdAdmin == true)
                     {
-                        <span class="text-muted">—</span>
+                        <a asp-action="Edit" asp-route-id="@gorev.Id" class="btn btn-warning btn-sm ms-1">Düzenle</a>
+                        <a asp-action="Delete" asp-route-id="@gorev.Id" class="btn btn-danger btn-sm ms-1">Sil</a>
                     }
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@gorev.Id" class="btn btn-warning btn-sm">Düzenle</a>
-                    ...
                 </td>
             </tr>
         }

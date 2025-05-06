@@ -16,22 +16,25 @@ namespace HomeTasksApp.Controllers
 
         // GÖREV OLUŞTUR (GET)
         public IActionResult Create()
-        {
-            var currentUserId = HttpContext.Session.GetInt32("UserId");
-            if (currentUserId == null)
-                return RedirectToAction("Login", "Account");
+    {
+        var currentUserId = HttpContext.Session.GetInt32("UserId");
+        if (currentUserId == null) return RedirectToAction("Login", "Account");
 
-            var currentUser = _context.Users
-                .Include(u => u.Household)
-                .FirstOrDefault(u => u.Id == currentUserId);
+        var currentUser = _context.Users
+            .Include(u => u.Household)
+            .FirstOrDefault(u => u.Id == currentUserId);
 
-            var users = _context.Users
-                .Where(u => u.HouseholdId == currentUser.HouseholdId)
-                .ToList();
+        if (currentUser == null || !currentUser.IsHouseholdAdmin)
+            return RedirectToAction("Index", "Home");
 
-            ViewBag.KullaniciListesi = new SelectList(users, "Id", "Name");
-            return View();
-        }
+        var users = _context.Users
+            .Where(u => u.HouseholdId == currentUser.HouseholdId)
+            .ToList();
+
+        ViewBag.KullaniciListesi = new SelectList(users, "Id", "Name");
+        return View();
+    }
+
 
         // GÖREV OLUŞTUR (POST)
         [HttpPost]
@@ -39,8 +42,14 @@ namespace HomeTasksApp.Controllers
         public IActionResult Create(Gorev gorev)
         {
             var currentUserId = HttpContext.Session.GetInt32("UserId");
-            if (currentUserId == null)
-                return RedirectToAction("Login", "Account");
+            if (currentUserId == null) return RedirectToAction("Login", "Account");
+
+            var currentUser = _context.Users
+                .Include(u => u.Household)
+                .FirstOrDefault(u => u.Id == currentUserId);
+
+            if (currentUser == null || !currentUser.IsHouseholdAdmin)
+                return RedirectToAction("Index", "Home");
 
             if (ModelState.IsValid)
             {
@@ -50,17 +59,14 @@ namespace HomeTasksApp.Controllers
                 return RedirectToAction("Index");
             }
 
-            var currentUser = _context.Users
-                .Include(u => u.Household)
-                .FirstOrDefault(u => u.Id == currentUserId);
-
             var users = _context.Users
                 .Where(u => u.HouseholdId == currentUser.HouseholdId)
                 .ToList();
 
-            ViewBag.KullaniciListesi = new SelectList(users, "Id", "Name");
+            ViewBag.KullaniciListesi = new SelectList(users, "Id", "Name", gorev.AssignedUserId);
             return View(gorev);
         }
+
         // GÖREVLERİ GÜNCELLE (GET)
         public IActionResult Edit(int id)
         {
@@ -113,15 +119,13 @@ namespace HomeTasksApp.Controllers
         public IActionResult Index()
         {
             var currentUserId = HttpContext.Session.GetInt32("UserId");
-            if (currentUserId == null)
-                return RedirectToAction("Login", "Account");
+            if (currentUserId == null) return RedirectToAction("Login", "Account");
 
             var currentUser = _context.Users
                 .Include(u => u.Household)
                 .FirstOrDefault(u => u.Id == currentUserId);
 
-            if (currentUser == null)
-                return RedirectToAction("Login", "Account");
+            if (currentUser == null) return RedirectToAction("Login", "Account");
 
             var gorevler = _context.Gorevler
                 .Include(g => g.AssignedUser)
@@ -130,23 +134,24 @@ namespace HomeTasksApp.Controllers
                 .ToList();
 
             ViewBag.CurrentUserId = currentUserId;
+            ViewBag.CurrentUserIsHouseholdAdmin = currentUser.IsHouseholdAdmin;
 
             return View(gorevler);
         }
-        // GÖREV SİL (GET)
+
+        // GÖREVİ SİL (GET)
         public IActionResult Delete(int id)
         {
-            var gorev = _context.Gorevler
-                .Include(g => g.AssignedUser)
-                .FirstOrDefault(g => g.Id == id);
-
-            if (gorev == null)
-                return NotFound();
-
-            return View(gorev);
+            var gorev = _context.Gorevler.FirstOrDefault(g => g.Id == id);
+            if (gorev != null)
+            {
+                _context.Gorevler.Remove(gorev);
+                _context.SaveChanges();
+            }
+            return RedirectToAction("Index");
         }
 
-        // GÖREV SİL (POST)
+        // GÖREVİ SİL (POST)
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(int id)
@@ -162,13 +167,13 @@ namespace HomeTasksApp.Controllers
         }
 
 
+
         // GÖREVİ TAMAMLAMA
         [HttpPost]
         public IActionResult Tamamla(int id)
         {
             var currentUserId = HttpContext.Session.GetInt32("UserId");
-            if (currentUserId == null)
-                return RedirectToAction("Login", "Account");
+            if (currentUserId == null) return RedirectToAction("Login", "Account");
 
             var gorev = _context.Gorevler.FirstOrDefault(g => g.Id == id);
             if (gorev != null && !gorev.TamamlandiMi)
