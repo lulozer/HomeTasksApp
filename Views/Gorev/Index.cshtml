@@ -1,0 +1,61 @@
+﻿@model List<HomeTasksApp.Models.Gorev>
+
+@{
+    ViewData["Title"] = "Görev Listesi";
+    var currentUserId = ViewBag.CurrentUserId as int?;
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Başlık</th>
+            <th>Açıklama</th>
+            <th>Son Tarih</th>
+            <th>Atanan Kişi</th>
+            <th>Tamamlayan</th>
+            <th>Durum</th>
+            <th>İşlem</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var gorev in Model)
+        {
+            <tr>
+                <td>@gorev.Baslik</td>
+                <td>@gorev.Aciklama</td>
+                <td>@gorev.SonTarih.ToShortDateString()</td>
+                <td>@gorev.AssignedUser?.Name</td>
+                <td>@gorev.CompletedByUser?.Name ?? "—"</td>
+                <td>
+                    @if (gorev.TamamlandiMi)
+                    {
+                        <span class="text-success">✔ Tamamlandı</span>
+                    }
+                    else
+                    {
+                        <span class="text-warning">⏳ Bekliyor</span>
+                    }
+                </td>
+                <td>
+                    @if (!gorev.TamamlandiMi)
+                    {
+                        <form asp-action="Tamamla" method="post">
+                            <input type="hidden" name="id" value="@gorev.Id" />
+                            <button type="submit" class="btn btn-success btn-sm">Tamamla</button>
+                        </form>
+                    }
+                    else
+                    {
+                        <span class="text-muted">—</span>
+                    }
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@gorev.Id" class="btn btn-warning btn-sm">Düzenle</a>
+                    ...
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

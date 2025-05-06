@@ -1,0 +1,20 @@
+﻿<h2>@ViewBag.HouseholdUsers.Count kişi @ViewBag.HouseholdTasks.Count görev ile listeleniyor</h2>
+
+<h3>Görev Listesi</h3>
+<table class="table">
+    <tr>
+        <th>Görev</th>
+        <th>Açıklama</th>
+        <th>Kime Atandı</th>
+        <th>Durum</th>
+    </tr>
+    @foreach (var g in (List<HomeTasksApp.Models.Gorev>)ViewBag.HouseholdTasks)
+    {
+        <tr>
+            <td>@g.Baslik</td>
+            <td>@g.Aciklama</td>
+            <td>@g.AssignedUser?.Name</td>
+            <td>@(g.TamamlandiMi ? "✔️" : "⏳")</td>
+        </tr>
+    }
+</table>

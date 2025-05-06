@@ -5,7 +5,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
 
-// 🛠 BURAYA EKLE
+
 builder.Services.AddDbContext<UygulamaDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
@@ -27,7 +27,7 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
-app.Run();
+
 
 using (var scope = app.Services.CreateScope())
 {
@@ -41,7 +41,8 @@ using (var scope = app.Services.CreateScope())
             Name = "Ekin",
             Password = "ekin123",
             IsAdmin = false,
-            Household = household!
+            Household = household!,
+            IsHouseholdAdmin = false
         });
         db.SaveChanges();
     }
@@ -67,8 +68,9 @@ using (var scope = app.Services.CreateScope())
         {
             Name = "Behiye",
             Password = "behiye123",
-            IsAdmin = true,
-            Household = evimiz
+            IsAdmin = false,
+            Household = evimiz,
+            IsHouseholdAdmin = true
         });
     }
 
@@ -80,10 +82,12 @@ using (var scope = app.Services.CreateScope())
             Name = "Nisa",
             Password = "nisa123",
             IsAdmin = false,
-            Household = evimiz
+            Household = evimiz,
+            IsHouseholdAdmin = false
         });
     }
 
     db.SaveChanges();
 }
 
+app.Run();  // en sonda olmalı !

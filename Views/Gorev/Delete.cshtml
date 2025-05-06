@@ -1,0 +1,17 @@
+﻿@model HomeTasksApp.Models.Gorev
+
+<h2>Görevi Sil</h2>
+
+<div>
+    <h4>@Model.Baslik</h4>
+    <p>@Model.Aciklama</p>
+    <p><strong>Son Tarih:</strong> @Model.SonTarih.ToShortDateString()</p>
+    <p><strong>Atanan Kişi:</strong> @Model.AssignedUser?.Name</p>
+
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="Id" />
+        <button type="submit" class="btn btn-danger">Sil</button>
+        <a asp-action="Index" class="btn btn-secondary">İptal</a>
+    </form>
+</div>
+

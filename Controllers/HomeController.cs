@@ -1,6 +1,8 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using HomeTasksApp.Models;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
+
 
 namespace HomeTasksApp.Controllers
 {
@@ -19,10 +21,24 @@ namespace HomeTasksApp.Controllers
                 return RedirectToAction("Login", "Account");
 
             var userId = GetCurrentUserId();
-            var user = _context.Users.FirstOrDefault(u => u.Id == userId);
+            var user = _context.Users
+                .Include(u => u.Household)
+                .FirstOrDefault(u => u.Id == userId);
 
-            ViewBag.UserName = user?.Name;
+            if (user == null)
+                return RedirectToAction("Login", "Account");
+
+            // Bu kullanıcıya atanmış görevler
+            var gorevler = _context.Gorevler
+                .Include(g => g.AssignedUser)
+                .Where(g => g.AssignedUserId == userId)
+                .ToList();
+
+            ViewBag.UserName = user.Name;
+            ViewBag.Gorevler = gorevler;
+
             return View();
         }
+
     }
 }

@@ -38,13 +38,14 @@ namespace HomeTasksApp.Controllers
                 await _context.SaveChangesAsync();
             }
 
-            bool isFirstUser = !_context.Users.Any(); // İlk kullanıcı kontrolü
+            bool isFirstUser = !_context.Users.Any();
 
             var user = new User
             {
                 Name = model.Name,
                 Password = model.Password,
-                IsAdmin = isFirstUser,
+                IsAdmin = isFirstUser,                  // sadece ilk kullanıcı admin
+                IsHouseholdAdmin = !isFirstUser,        // diğeri varsa reisi o olur
                 Household = household
             };
 
@@ -53,10 +54,7 @@ namespace HomeTasksApp.Controllers
 
             HttpContext.Session.SetInt32("UserId", user.Id);
 
-            if (user.IsAdmin)
-                return RedirectToAction("Index", "Admin");
-            else
-                return RedirectToAction("Index", "Home");
+            return RedirectToRolePanel(user);
         }
 
         // GET: /Account/Login
@@ -84,10 +82,18 @@ namespace HomeTasksApp.Controllers
 
             HttpContext.Session.SetInt32("UserId", user.Id);
 
+            return RedirectToRolePanel(user);
+        }
+
+        private IActionResult RedirectToRolePanel(User user)
+        {
             if (user.IsAdmin)
                 return RedirectToAction("Index", "Admin");
-            else
-                return RedirectToAction("Index", "Home");
+
+            if (user.IsHouseholdAdmin)
+                return RedirectToAction("Dashboard", "HouseholdAdmin");
+
+            return RedirectToAction("Index", "Home");
         }
 
         public IActionResult Logout()
