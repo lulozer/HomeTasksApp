@@ -92,8 +92,6 @@ Aşağıda uygulamanın farklı sayfalarına ait ekran görüntülerini bulabili
 - Bootstrap 5
 - Session tabanlı kimlik doğrulama
 
-## 🤝 Katkı ve İletişim
 
-Projeyi geliştirmeye devam ediyorum. Her türlü öneri, katkı veya hata bildirimi için iletişime geçebilirsiniz.
 
 ---
